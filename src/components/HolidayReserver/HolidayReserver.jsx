@@ -46,7 +46,11 @@ let HolidayReserver = () => {
           onChange={onChange}
           value={value}
           onClickDay={(value, event) => {
-            setFrom(value);
+            if (value <= new Date()) {
+              alert('Date must be after today!');
+            } else {
+              setFrom(value);
+            }
           }}
         />
       )}
@@ -75,7 +79,11 @@ let HolidayReserver = () => {
             onChange={onChange}
             value={value}
             onClickDay={(value, event) => {
-              setTo(value);
+              if (value <= from) {
+                alert('Ending date must be after starting date!');
+              } else {
+                setTo(value);
+              }
             }}
           />
         )

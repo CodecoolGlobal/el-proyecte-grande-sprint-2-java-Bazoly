@@ -1,91 +1,111 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./Employee.css"
-import * as PropTypes from "prop-types";
-import {useParams} from "react-router-dom";
-import {numberFormat} from "../../util.js"
+import './Employee.css';
+import * as PropTypes from 'prop-types';
+import { Link, useParams } from 'react-router-dom';
+import { numberFormat } from '../../util.js';
+import { Route, Switch } from 'react-router';
+import HolidayButton from '../Navigation/HolidayButton/HolidayButton';
 
 function EmployeeHeader() {
-    return <h4 id="employeeHeader">Employee data</h4>;
+  return <h4 id='employeeHeader'>Employee data</h4>;
 }
 
 function EditButton() {
-    return <div id="editEmployeeButton">
-        <button>Edit</button>
-    </div>;
+  return (
+    <div id='editEmployeeButton'>
+      <button>Edit</button>
+    </div>
+  );
 }
 
 function UserData(props) {
-    return <Table striped bordered hover>
-        <tbody>
+  return (
+    <Table striped bordered hover>
+      <tbody>
         <tr>
-            <td>Name</td>
-            <td>{props.userData.name}</td>
+          <td>Name</td>
+          <td>{props.userData.name}</td>
         </tr>
         <tr>
-            <td>Phone number</td>
-            <td>{props.userData.phoneNumber}</td>
+          <td>Phone number</td>
+          <td>{props.userData.phoneNumber}</td>
         </tr>
         <tr>
-            <td>E-mail</td>
-            <td>{props.userData.email}</td>
+          <td>E-mail</td>
+          <td>{props.userData.email}</td>
         </tr>
         <tr>
-            <td>Address</td>
-            <td><Address address={props.userData.address}/></td>
+          <td>Address</td>
+          <td>
+            <Address address={props.userData.address} />
+          </td>
         </tr>
         <tr>
-            <td>Salary</td>
-            <td>{numberFormat(props.userData.salary)}</td>
+          <td>Salary</td>
+          <td>{numberFormat(props.userData.salary)}</td>
         </tr>
-        </tbody>
-    </Table>;
+      </tbody>
+    </Table>
+  );
 }
 
-function Address({address}) {
-    if (address !== undefined)
-        return address.postalCode + " " + address.city + ", " + address.street + " " + address.houseNumber + ".";
-    return "";
+function Address({ address }) {
+  if (address !== undefined)
+    return (
+      address.postalCode +
+      ' ' +
+      address.city +
+      ', ' +
+      address.street +
+      ' ' +
+      address.houseNumber +
+      '.'
+    );
+  return '';
 }
 
 function ModifyButton() {
-    return <div id="modifyEmployeeButton">
-        <button>Modify data</button>
-    </div>;
+  return (
+    <div id='modifyEmployeeButton'>
+      <button>Modify data</button>
+    </div>
+  );
 }
 
 let Employee = () => {
-    let [userData, setData] = useState([]);
-    const {userId} = useParams();
+  let [userData, setData] = useState([]);
+  const { userId } = useParams();
 
-    let getUserURL = "http://localhost:8080/api/user/";
+  let getUserURL = 'http://localhost:8080/api/user/';
 
-    let fetchEmployeeById = useCallback(async () => {
-        let userData = await fetch(getUserURL + userId, {
-            method: 'GET',
-            credentials: 'include',
-            mode: 'cors'
-        })
-            .then(res => res.json())
-            .catch(err => console.error(err));
-        setData(userData)
-    }, [getUserURL, userId])
+  let fetchEmployeeById = useCallback(async () => {
+    let userData = await fetch(getUserURL + userId, {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    })
+      .then((res) => res.json())
+      .catch((err) => console.error(err));
+    setData(userData);
+  }, [getUserURL, userId]);
 
-    useEffect(() => {
-        fetchEmployeeById().catch(err => console.error(err));
-    }, [fetchEmployeeById]);
+  useEffect(() => {
+    fetchEmployeeById().catch((err) => console.error(err));
+  }, [fetchEmployeeById]);
 
-    return (
-        <div className="employee">
-            <EmployeeHeader/>
-            <EditButton/>
-            <UserData userData={userData}/>
-            <ModifyButton/>
-        </div>
-    );
+  return (
+    <div className='employee'>
+      <EmployeeHeader />
+      <EditButton />
+      <UserData userData={userData} />
+      <ModifyButton />
+      <HolidayButton userData={userData} />
+    </div>
+  );
 };
 
-UserData.propTypes = {userData: PropTypes.arrayOf(PropTypes.any)};
+UserData.propTypes = { userData: PropTypes.arrayOf(PropTypes.any) };
 
 export default Employee;

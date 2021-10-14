@@ -55,7 +55,9 @@ let HolidayReserver = () => {
         to ? (
           <div>
             <p>{to.toDateString()} </p>
-            <button onClick={() => setFrom(null)}>Modify ending date</button>
+
+            <button onClick={() => setTo(null)}>Modify ending date</button>
+            <h2>{getHolidayLength()} days</h2>
             <button
               onClick={() => {
                 alert(

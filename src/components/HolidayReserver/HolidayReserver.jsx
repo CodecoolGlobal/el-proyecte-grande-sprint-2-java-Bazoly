@@ -10,6 +10,10 @@ let HolidayReserver = () => {
   const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
 
+  const getHolidayLength = () => {
+    return Math.ceil(Math.abs(to - from) / (1000 * 60 * 60 * 24));
+  };
+
   let getUserURL = 'http://localhost:8080/api/user/';
 
   let fetchEmployeeById = useCallback(async () => {
@@ -28,14 +32,14 @@ let HolidayReserver = () => {
   }, [fetchEmployeeById]);
 
   return (
-    <div className='employee'>
+    <div>
       <h1>Holiday</h1>
       <h2>Reserve holiday for: {userData.name}</h2>
       <h2>From:</h2>
       {from ? (
         <div>
           <p>{from.toDateString()} </p>
-          <h2>To:</h2>
+          <button onClick={() => setFrom(null)}>Modify starting date</button>
         </div>
       ) : (
         <Calendar
@@ -46,24 +50,18 @@ let HolidayReserver = () => {
           }}
         />
       )}
+      <h2>To:</h2>
       {from ? (
         to ? (
           <div>
             <p>{to.toDateString()} </p>
-            <button
-              onClick={() => {
-                setFrom(null);
-                setTo(null);
-              }}
-            >
-              Modify
-            </button>
+            <button onClick={() => setFrom(null)}>Modify ending date</button>
             <button
               onClick={() => {
                 alert(
                   `You set a holiday for ${
                     userData.name
-                  }\nFrom: ${from.toDateString()}, to: ${to.toDateString()}`
+                  }\nFrom: ${from.toDateString()}, to: ${to.toDateString()}\n(${getHolidayLength()} days)`
                 );
               }}
             >
@@ -79,7 +77,9 @@ let HolidayReserver = () => {
             }}
           />
         )
-      ) : null}
+      ) : (
+        <p>Set starting date first!</p>
+      )}
     </div>
   );
 };
